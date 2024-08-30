@@ -3,6 +3,7 @@ package org.shvedovva.services;
 import org.shvedovva.dao.CurrencyDao;
 import org.shvedovva.dto.CurrencyDto;
 import org.shvedovva.model.Currency;
+import org.shvedovva.util.CurrencyConverter;
 
 
 import java.util.List;
@@ -19,5 +20,10 @@ public class CurrencyService {
         return currencies.stream()
                 .map(c -> new CurrencyDto(c.getId(),c.getFullName(),c.getCode(),c.getSign()))
                 .collect(Collectors.toList());
+    }
+
+    public CurrencyDto findByCode(String code){
+        Currency currency = currencyDao.findByCode(code);
+        return CurrencyConverter.convertToDto(currency);
     }
 }

@@ -8,13 +8,44 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CurrencyDao {
+    public Currency findByCode(String code){
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("class not found");
+        }
+        String sql = "SELECT Id, Code, FullName, Sign FROM Currencies WHERE Code = ?";
+        try(Connection conn = DriverManager.getConnection("jdbc:sqlite::resource:CurrencyExchange.db");
+        PreparedStatement psmt = conn.prepareStatement(sql)){
+            psmt.setString(1, code);
+            ResultSet rs = psmt.executeQuery();
+            if (rs.next()){
+                Currency result = convertResultSet(rs);
+                rs.close();
+                return result;
+            }
+            else return null;
+
+        }
+        catch (SQLException e){
+            throw new DatabaseException("DB not available");
+        }
+    }
+
+
+
     public List<Currency> findAll() {
         String sql = "SELECT Id, Code, FullName, Sign FROM Currencies;";
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("class not found");
+        }
         try (Connection conn = DriverManager.getConnection("jdbc:sqlite::resource:CurrencyExchange.db");
              Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
             List<Currency> result = new LinkedList<>();
-            while (rs.next()){
+            while (rs.next()) {
                 Currency currencyDto = convertResultSet(rs);
                 result.add(currencyDto);
             }
