@@ -2,6 +2,7 @@ package org.shvedovva.dao;
 
 import org.shvedovva.exceptions.DatabaseException;
 import org.shvedovva.model.Currency;
+import org.shvedovva.util.DBConnector;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -9,14 +10,10 @@ import java.util.List;
 
 public class CurrencyDao {
     public Currency findByCode(String code){
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("class not found");
-        }
+
         String sql = "SELECT Id, Code, FullName, Sign FROM Currencies WHERE Code = ?";
-        try(Connection conn = DriverManager.getConnection("jdbc:sqlite::resource:CurrencyExchange.db");
-        PreparedStatement psmt = conn.prepareStatement(sql)){
+        try(Connection conn = DBConnector.getConnection();
+            PreparedStatement psmt = conn.prepareStatement(sql)){
             psmt.setString(1, code);
             ResultSet rs = psmt.executeQuery();
             if (rs.next()){
@@ -33,15 +30,10 @@ public class CurrencyDao {
     }
 
 
-
     public List<Currency> findAll() {
         String sql = "SELECT Id, Code, FullName, Sign FROM Currencies;";
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("class not found");
-        }
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite::resource:CurrencyExchange.db");
+
+        try (Connection conn = DBConnector.getConnection();
              Statement stmt = conn.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
             List<Currency> result = new LinkedList<>();
