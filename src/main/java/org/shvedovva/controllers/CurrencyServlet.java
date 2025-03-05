@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet("/currency/*")
-public class CurrencyController extends HttpServlet {
+public class CurrencyServlet extends HttpServlet {
     private CurrencyDao dao = new CurrencyDao();
     private CurrencyService service = new CurrencyService(dao);
     private ObjectMapper mapper = new ObjectMapper();
@@ -22,7 +22,7 @@ public class CurrencyController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String code = req.getPathInfo().substring(1);
-        CurrencyDto dto = service.findByCode(code);
+        CurrencyDto dto = service.findByCode(Long.parseLong(code));
         PrintWriter writer = resp.getWriter();
         writer.println(dto);
     }

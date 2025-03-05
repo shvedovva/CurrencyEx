@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 public class CurrencyService {
     private final CurrencyDao currencyDao;
+
     public CurrencyService(CurrencyDao currencyDao) {
         this.currencyDao = currencyDao;
     }
@@ -22,8 +23,8 @@ public class CurrencyService {
                 .collect(Collectors.toList());
     }
 
-    public CurrencyDto findByCode(String code){
-        Currency currency = currencyDao.findByCode(code);
+    public CurrencyDto findByCode(Long code){
+        Currency currency = currencyDao.findById(code);
         return CurrencyConverter.convertToDto(currency);
     }
 }

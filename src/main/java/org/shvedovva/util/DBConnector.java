@@ -1,27 +1,48 @@
 package org.shvedovva.util;
 
 import org.shvedovva.exceptions.DatabaseException;
+import org.sqlite.SQLiteDataSource;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBConnector {
-    public static Connection getConnection(){
-        final String DB_URI = "jdbc:sqlite::resource:CurrencyExchange.db";
+    private static final String DB_URI = "jdbc:sqlite::resource:CurrencyExchange.db";
 
-        Connection connection;
+    public static DataSource dataSource;
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection(DB_URI);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Not found driver");
-        } catch (SQLException e) {
-            throw new DatabaseException("Database connection error");
+    static{
+        try{
+            //Class.forName("org.sqlite.JDBC");
+            SQLiteDataSource sqLiteDataSource = new SQLiteDataSource();
+            sqLiteDataSource.setUrl(DB_URI);
+            dataSource = sqLiteDataSource;
         }
-
-        return connection;
-
+        catch (Exception ex){
+            throw new RuntimeException("Error connect DB", ex);
+        }
     }
+
+    public static Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
+
+//    public static Connection getConnection(){
+//
+//
+//        Connection connection;
+//
+//        try {
+//            Class.forName("org.sqlite.JDBC");
+//            connection = DriverManager.getConnection(DB_URI);
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException("Not found driver");
+//        } catch (SQLException e) {
+//            throw new DatabaseException("Database connection error");
+//        }
+//
+//        return connection;
+//    }
 }
