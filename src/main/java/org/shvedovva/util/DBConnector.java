@@ -1,5 +1,6 @@
 package org.shvedovva.util;
 
+import lombok.Data;
 import org.shvedovva.exceptions.DatabaseException;
 import org.sqlite.SQLiteDataSource;
 
@@ -20,7 +21,7 @@ public class DBConnector {
             sqLiteDataSource.setUrl(DB_URI);
             dataSource = sqLiteDataSource;
         }
-        catch (Exception ex){
+        catch (DatabaseException ex){
             throw new RuntimeException("Error connect DB", ex);
         }
     }

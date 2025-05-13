@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.shvedovva.dao.CurrencyDao;
 import org.shvedovva.dto.CurrencyDto;
-import org.shvedovva.model.Currency;
 import org.shvedovva.services.CurrencyService;
 
 import java.io.IOException;
@@ -16,7 +15,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet("/currencies")
-public class CurrenciesController extends HttpServlet {
+public class CurrenciesServlet extends HttpServlet {
     private CurrencyDao dao = new CurrencyDao();
     private CurrencyService service = new CurrencyService(dao);
     private ObjectMapper mapper = new ObjectMapper();
