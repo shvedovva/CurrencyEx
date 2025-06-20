@@ -23,8 +23,9 @@ public class CurrencyService {
                 .collect(Collectors.toList());
     }
 
-    public CurrencyDto findByCode(Long code){
-        Currency currency = currencyDao.findById(code);
+    public CurrencyDto findByCode(String code){
+        Currency currency = currencyDao.findByCode(code);
         return CurrencyConverter.convertToDto(currency);
     }
 }
+

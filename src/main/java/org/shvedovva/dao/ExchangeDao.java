@@ -8,11 +8,11 @@ public class ExchangeDao implements CrudDAO<Exchange, Long>{
 
     private CurrencyDao currencyDao = new CurrencyDao();
 
-    @Override
+    /*@Override
     public Exchange findById(Long id) {
         return null;
     }
-
+*/
     @Override
     public List<Exchange> findAll() {
         return null;

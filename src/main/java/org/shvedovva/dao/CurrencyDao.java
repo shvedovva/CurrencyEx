@@ -12,12 +12,50 @@ import java.util.List;
 
 public class CurrencyDao implements CrudDAO<Currency, Long> {
 
-    public Currency findById(Long code){
+
+    /*  public Currency getCurrencyByCode(String code) {
+        String sql = "SELECT * FROM Currencies WHERE Code = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, code);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapToCurrency(rs);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching currency by code", e);
+        }
+
+        return null;
+        public Currency getCurrencyById(int id) {
+        String sql = "SELECT * FROM Currencies WHERE ID = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return mapToCurrency(rs);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching currency by ID", e);
+        }
+
+        return null;
+    }
+    }*/
+
+    public Currency findByCode(String code){
         String sql = "SELECT Id, Code, FullName, Sign FROM Currencies WHERE Code = ?";
 
         try(Connection conn = DatabaseConnectionManager.getConnection();
             PreparedStatement psmt = conn.prepareStatement(sql)){
-            psmt.setString(1, String.valueOf(code));
+            psmt.setString(1, code);
             ResultSet rs = psmt.executeQuery();
             if (rs.next()){
                 Currency result = convertResultSet(rs);
@@ -30,7 +68,6 @@ public class CurrencyDao implements CrudDAO<Currency, Long> {
             throw new DatabaseException("DB not available");
         }
     }
-
 
     public List<Currency> findAll() {
         List<Currency> currencies = new ArrayList<>();
@@ -48,27 +85,35 @@ public class CurrencyDao implements CrudDAO<Currency, Long> {
                 currency.setSign(rs.getString("Sign"));
                 currencies.add(currency);
             }
-
-            return currencies;
         } catch (SQLException e) {
             throw new DatabaseException("Database is unavailable!");
         }
+        return currencies;
     }
 
     @Override
     public void save(Currency item) {
-        String sql = "insert into Currencies (Code, FullName, Sign) values (?,?,?)";
+        String sql = "INSERT INTO Currencies (Code, FullName, Sign) values (?,?,?)";
 
         try(Connection conn = DatabaseConnectionManager.getConnection();
-        PreparedStatement psmt = conn.prepareStatement(sql)){
+        PreparedStatement psmt = conn.prepareStatement(sql)) {
+            //if(findById(item.getId()))
+            psmt.setString(1, item.getCode());
+            psmt.setString(2, item.getFullName());
+            psmt.setString(3, item.getSign());
+            int insRows = psmt.executeUpdate();
+            if (insRows == 0) {
+                throw new SQLException("Failes. No rows add");
+            }
+
+            ResultSet rs = psmt.getGeneratedKeys();
 
         }
         catch (SQLException e){
             throw new DatabaseException("Database is unavailable!");
         }
-
-
     }
+
 
     @Override
     public void delete(Long id) {
@@ -82,8 +127,6 @@ public class CurrencyDao implements CrudDAO<Currency, Long> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
 
