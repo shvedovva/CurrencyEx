@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface CrudDAO<T, ID>{
 
-    T findById(ID id);
+    //T findById(ID id);
 
     List<T> findAll();
 
